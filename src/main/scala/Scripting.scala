@@ -50,6 +50,48 @@ object Scripting extends App {
   val jsDate = js.eval("new Date()")
   println(jsDate + " " + jsDate.getClass.getName)
 
+  val jsFunDef = js.eval("function f(x) { return x + x + x; }")
+  println(jsFunDef + " " + jsFunDef.getClass.getName)
+  val jsFunInv = js.eval("f(10)").asInstanceOf[Double]
+  println(jsFunInv)
+
+
+  println("---- ruby ----")
+
+  val rb = sem.getEngineByName("ruby")
+
+  val rbInt = rb.eval("456")
+  println(rbInt + " " + rbInt.getClass.getName)
+
+  val rbDouble = rb.eval("23.4 * 23.1")
+  println(rbDouble + " " + rbDouble.getClass.getName)
+
+  val rbBool = rb.eval("false or true")
+  println(rbBool + " " + rbBool.getClass.getName)
+
+  val rbStr = rb.eval(""" 'dupa' + '<>' + "biskupa"  """)
+  println(rbStr + " " + rbStr.getClass.getName)
+
+  val rbArray = rb.eval(" [1,2,3,4].map {|x| x * 3}")
+  println(rbArray.asInstanceOf[java.util.List[_]].toList + " " + rbArray.getClass.getName)
+
+  val rbDict = rb.eval("{ a: 123, b: true, c: 23.0 }")
+  println(rbDict.asInstanceOf[java.util.Map[_,_]].toMap + " " + rbDict.getClass.getName)
+
+  val rbDict2 = rb.eval("{ :a => 123, :b => true, :c => 23.0 }")
+  println(rbDict2.asInstanceOf[java.util.Map[_,_]].toMap + " " + rbDict2.getClass.getName)
+
+  val rbFun = rb.eval("lambda { |x| x + x }")
+  println(rbFun + " " + rbFun.getClass.getName)
+
+  val rbDate = rb.eval("Time.now")
+  println(rbDate + " " + rbDate.getClass.getName)
+
+  val rbFunDef = rb.eval("def f(x) return x + x + x end")
+  println(rbFunDef)// + " " + rbFunDef.getClass.getName)
+  val rbFunInv = rb.eval("f(10.0)").asInstanceOf[Double]
+  println(rbFunInv)
+
 
   println("---- scala ----")
   val sc = sem.getEngineByName("scala")
@@ -88,36 +130,12 @@ object Scripting extends App {
   val scDate2 = sc.eval("import java.time._; LocalDateTime.now")
   println(scDate2 + " " + scDate2.getClass.getName)
 
-  println("---- ruby ----")
+  val scFunDef = sc.eval("def f(x: Double): Double = { x + x + x }")
+  println(scFunDef)// + " " + scFunDef.getClass.getName)
+  val scFunInv = sc.eval("f(10)").asInstanceOf[Double]
+  println(scFunInv)
 
-  val rb = sem.getEngineByName("ruby")
 
-  val rbInt = rb.eval("456")
-  println(rbInt + " " + rbInt.getClass.getName)
-
-  val rbDouble = rb.eval("23.4 * 23.1")
-  println(rbDouble + " " + rbDouble.getClass.getName)
-
-  val rbBool = rb.eval("false or true")
-  println(rbBool + " " + rbBool.getClass.getName)
-
-  val rbStr = rb.eval(""" 'dupa' + '<>' + "biskupa"  """)
-  println(rbStr + " " + rbStr.getClass.getName)
-
-  val rbArray = rb.eval(" [1,2,3,4].map {|x| x * 3}")
-  println(rbArray.asInstanceOf[java.util.List[_]].toList + " " + rbArray.getClass.getName)
-
-  val rbDict = rb.eval("{ a: 123, b: true, c: 23.0 }")
-  println(rbDict.asInstanceOf[java.util.Map[_,_]].toMap + " " + rbDict.getClass.getName)
-
-  val rbDict2 = rb.eval("{ :a => 123, :b => true, :c => 23.0 }")
-  println(rbDict2.asInstanceOf[java.util.Map[_,_]].toMap + " " + rbDict2.getClass.getName)
-
-  val rbFun = rb.eval("lambda { |x| x + x }")
-  println(rbFun + " " + rbFun.getClass.getName)
-
-  val rbDate = rb.eval("Time.now")
-  println(rbDate + " " + rbDate.getClass.getName)
 
 }
 
