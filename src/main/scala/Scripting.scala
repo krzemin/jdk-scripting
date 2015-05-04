@@ -1,7 +1,8 @@
 import javax.script._
 import jdk.nashorn.api.scripting.{NashornScriptEngine, ScriptObjectMirror, ScriptUtils}
 import jdk.nashorn.internal.runtime.Context
-import scala.collection.JavaConversions._
+//import scala.collection.JavaConversions._
+import scala.collection.JavaConverters._
 import jdk.nashorn.internal.objects.{Global, NativeJava}
 
 object Scripting extends App {
@@ -38,16 +39,16 @@ object Scripting extends App {
 
   val jsArray = js.eval("[2,3,4,5].map(function (x) { return x * 2; }) ")
   val jsArrayS = jsArray.asInstanceOf[ScriptObjectMirror]
-  println(jsArrayS.values().toList)
+  println(jsArrayS.values().asScala.toList)
   println(jsArrayS.getOwnKeys(true).toList)
   println(jsArrayS.getOwnKeys(false).toList)
-  println(jsArrayS.asInstanceOf[java.util.Map[_, _]].toMap)
+  println(jsArrayS.asInstanceOf[java.util.Map[_, _]].asScala)
 
 
   val jsDict = js.eval("(function(){return {\"a\": 3, \"b\": false};})()")
   val jsDictS = jsDict.asInstanceOf[java.util.Map[_, _]]
-  println(jsDictS.toMap + " " + jsDict.getClass.getName)
-  println(jsDict.asInstanceOf[ScriptObjectMirror].isArray + ": " +  jsDict.asInstanceOf[ScriptObjectMirror].values().toList + " " + jsDict.getClass.getName)
+  println(jsDictS.asScala + " " + jsDict.getClass.getName)
+  println(jsDict.asInstanceOf[ScriptObjectMirror].isArray + ": " +  jsDict.asInstanceOf[ScriptObjectMirror].values().asScala + " " + jsDict.getClass.getName)
   println(jsDict.asInstanceOf[ScriptObjectMirror].getOwnKeys(true).toList)
   println(jsDict.asInstanceOf[ScriptObjectMirror].getOwnKeys(false).toList)
 
@@ -80,17 +81,17 @@ object Scripting extends App {
   js.put("elements", elems)
   js.put("elements", js.eval("Java.from(elements)"))
   val jsVarAccessList1 = js.eval("elements")
-  println(jsVarAccessList1.asInstanceOf[ScriptObjectMirror].values().toList + " " + jsVarAccessList1.getClass.getName)
+  println(jsVarAccessList1.asInstanceOf[ScriptObjectMirror].values().asScala + " " + jsVarAccessList1.getClass.getName)
   val jsVarAccessList2 = js.eval("elements.filter(function(x) { return x % 2 == 0; });")
-  println(jsVarAccessList2.asInstanceOf[ScriptObjectMirror].values().toList + " " + jsVarAccessList2.getClass.getName)
+  println(jsVarAccessList2.asInstanceOf[ScriptObjectMirror].values().asScala + " " + jsVarAccessList2.getClass.getName)
 
-  val dict = collection.mutable.Map("a" -> 4, "b" -> false)
-  //val juMap: java.util.Map[String, Any] = dict
-  js.put("dict", dict)
-  val jsVarAccessList3 = js.eval("var x = Java.from(dict); x['b'] = true; x['c'] = 'kaka'; x")
+
+  val dict = Map("a" -> 4, "b" -> false)
+  val juMap: java.util.HashMap[String, Any] = new java.util.HashMap(dict.asJava)
+  js.put("dict", juMap)
+  val jsVarAccessList3 = js.eval("var x = dict; x.b = true; x.c = 'test'; x")
   println(jsVarAccessList3 + " " + jsVarAccessList3.getClass.getName)
-  println(dict)
-
+  println(juMap)
 
 
 
